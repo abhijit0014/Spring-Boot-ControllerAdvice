@@ -13,7 +13,8 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(ResourceNotFoundException.class)
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
-	public @ResponseBody ExceptionResponse handleResourceNotFound(final ResourceNotFoundException exception,
+	@ResponseBody
+	public ExceptionResponse handleResourceNotFound(final ResourceNotFoundException exception,
 			final HttpServletRequest request) {
 
 		ExceptionResponse error = new ExceptionResponse();
@@ -25,9 +26,22 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	public @ResponseBody ExceptionResponse handleException(final Exception exception,
+	@ResponseBody
+	public ExceptionResponse handleException(final Exception exception,
 			final HttpServletRequest request) {
 
+		ExceptionResponse error = new ExceptionResponse();
+		error.setErrorMessage(exception.getMessage());
+		error.callerURL(request.getRequestURI());
+
+		return error;
+	}
+	
+	@ExceptionHandler(Exception.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ExceptionResponse BadRequestException (final Exception exception,
+			final HttpServletRequest request) {
 		ExceptionResponse error = new ExceptionResponse();
 		error.setErrorMessage(exception.getMessage());
 		error.callerURL(request.getRequestURI());
